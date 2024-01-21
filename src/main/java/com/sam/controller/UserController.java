@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sam.exception.UserException;
 import com.sam.model.User;
 import com.sam.service.UserService;
 
@@ -22,7 +21,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/profile")
-	public ResponseEntity<User> getUserProfileHandler(@RequestHeader("Authorization") String jwt) throws UserException{
+	public ResponseEntity<User> getUserProfileHandler(@RequestHeader("Authorization") String jwt){
 
 		System.out.println("/api/users/profile");
 		User user=userService.findUserProfileByJwt(jwt);

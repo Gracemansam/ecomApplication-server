@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sam.exception.ProductException;
-import com.sam.exception.UserException;
 import com.sam.model.Review;
 import com.sam.model.User;
 import com.sam.request.ReviewRequest;
@@ -33,7 +31,7 @@ public class ReviewController {
 		// TODO Auto-generated constructor stub
 	}
 	@PostMapping("/create")
-	public ResponseEntity<Review> createReviewHandler(@RequestBody ReviewRequest req,@RequestHeader("Authorization") String jwt) throws UserException, ProductException{
+	public ResponseEntity<Review> createReviewHandler(@RequestBody ReviewRequest req,@RequestHeader("Authorization") String jwt){
 		User user=userService.findUserProfileByJwt(jwt);
 		System.out.println("product id "+req.getProductId()+" - "+req.getReview());
 		Review review=reviewService.createReview(req, user);

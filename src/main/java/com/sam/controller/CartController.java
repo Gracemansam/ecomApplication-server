@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sam.exception.ProductException;
-import com.sam.exception.UserException;
 import com.sam.model.Cart;
 import com.sam.model.CartItem;
 import com.sam.model.User;
@@ -32,7 +30,7 @@ public class CartController {
 	}
 	
 	@GetMapping("/")
-	public ResponseEntity<Cart> findUserCartHandler(@RequestHeader("Authorization") String jwt) throws UserException{
+	public ResponseEntity<Cart> findUserCartHandler(@RequestHeader("Authorization") String jwt) {
 		
 		User user=userService.findUserProfileByJwt(jwt);
 		
@@ -45,7 +43,7 @@ public class CartController {
 	
 	@PutMapping("/add")
 	public ResponseEntity<CartItem> addItemToCart(@RequestBody AddItemRequest req, 
-			@RequestHeader("Authorization") String jwt) throws UserException, ProductException{
+			@RequestHeader("Authorization") String jwt){
 		
 		User user=userService.findUserProfileByJwt(jwt);
 		

@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sam.exception.OrderException;
-import com.sam.exception.UserException;
 import com.sam.model.Address;
 import com.sam.model.Order;
 import com.sam.model.User;
@@ -33,11 +31,11 @@ public class OrderController {
 	}
 	
 	@PostMapping("/")
-	public ResponseEntity<Order> createOrderHandler(@RequestBody Address spippingAddress,
-			@RequestHeader("Authorization")String jwt) throws UserException{
+	public ResponseEntity<Order> createOrderHandler(@RequestBody Address shippingAddress,
+			@RequestHeader("Authorization")String jwt) {
 		
 		User user=userService.findUserProfileByJwt(jwt);
-		Order order =orderService.createOrder(user, spippingAddress);
+		Order order =orderService.createOrder(user, shippingAddress);
 		
 		return new ResponseEntity<Order>(order,HttpStatus.OK);
 		
@@ -45,7 +43,7 @@ public class OrderController {
 	
 	@GetMapping("/user")
 	public ResponseEntity< List<Order>> usersOrderHistoryHandler(@RequestHeader("Authorization") 
-	String jwt) throws OrderException, UserException{
+	String jwt) {
 		
 		User user=userService.findUserProfileByJwt(jwt);
 		List<Order> orders=orderService.usersOrderHistory(user.getId());
@@ -54,7 +52,7 @@ public class OrderController {
 	
 	@GetMapping("/{orderId}")
 	public ResponseEntity< Order> findOrderHandler(@PathVariable Long orderId, @RequestHeader("Authorization") 
-	String jwt) throws OrderException, UserException{
+	String jwt){
 		
 		User user=userService.findUserProfileByJwt(jwt);
 		Order orders=orderService.findOrderById(orderId);

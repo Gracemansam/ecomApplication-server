@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sam.exception.ProductException;
 import com.sam.model.Product;
 import com.sam.request.CreateProductRequest;
 import com.sam.response.ApiResponse;
@@ -30,7 +29,7 @@ public class AdminProductController {
 	}
 	
 	@PostMapping("/")
-	public ResponseEntity<Product> createProductHandler(@RequestBody CreateProductRequest req) throws ProductException{
+	public ResponseEntity<Product> createProductHandler(@RequestBody CreateProductRequest req) {
 		
 		Product createdProduct = productService.createProduct(req);
 		
@@ -39,7 +38,7 @@ public class AdminProductController {
 	}
 	
 	@DeleteMapping("/{productId}/delete")
-	public ResponseEntity<ApiResponse> deleteProductHandler(@PathVariable Long productId) throws ProductException{
+	public ResponseEntity<ApiResponse> deleteProductHandler(@PathVariable Long productId){
 		
 		System.out.println("dlete product controller .... ");
 		String msg=productService.deleteProduct(productId);
@@ -68,7 +67,7 @@ public class AdminProductController {
 	
 	
 	@PutMapping("/{productId}/update")
-	public ResponseEntity<Product> updateProductHandler(@RequestBody Product req,@PathVariable Long productId) throws ProductException{
+	public ResponseEntity<Product> updateProductHandler(@RequestBody Product req,@PathVariable Long productId) {
 		
 		Product updatedProduct=productService.updateProduct(productId, req);
 		
@@ -76,7 +75,7 @@ public class AdminProductController {
 	}
 	
 	@PostMapping("/creates")
-	public ResponseEntity<ApiResponse> createMultipleProduct(@RequestBody CreateProductRequest[] reqs) throws ProductException{
+	public ResponseEntity<ApiResponse> createMultipleProduct(@RequestBody CreateProductRequest[] reqs) {
 		
 		for(CreateProductRequest product:reqs) {
 			productService.createProduct(product);

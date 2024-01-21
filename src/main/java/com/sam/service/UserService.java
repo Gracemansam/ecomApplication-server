@@ -3,7 +3,6 @@ package com.sam.service;
 import java.util.List;
 
 import com.sam.dto.UserDto;
-import com.sam.exception.UserException;
 import com.sam.model.User;
 import com.sam.model.VerificationToken;
 import com.sam.request.LoginRequest;
@@ -16,15 +15,15 @@ public interface UserService {
 
 
 
-    ResponseEntity<AuthResponse> createUserHandler(UserDto userDto, HttpServletRequest request) throws UserException;
+    ResponseEntity<AuthResponse> createUserHandler(UserDto userDto, HttpServletRequest request);
 
     ResponseEntity<AuthResponse> signIn(LoginRequest loginRequest);
 
     Authentication authenticate(String username, String password);
 
-    public User findUserById(Long userId) throws UserException;
+    public User findUserById(Long userId) ;
 	
-	public User findUserProfileByJwt(String jwt) throws UserException;
+	public User findUserProfileByJwt(String jwt) ;
 	
 	public List<User> findAllUsers();
 

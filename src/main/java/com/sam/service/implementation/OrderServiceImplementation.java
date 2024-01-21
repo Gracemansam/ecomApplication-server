@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.sam.common_constant.CommonConstant;
+import com.sam.exception.BusinessException;
+import com.sam.exception.ErrorModel;
 import com.sam.service.CartService;
 import com.sam.service.OrderItemService;
 import com.sam.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sam.exception.OrderException;
 import com.sam.model.Address;
 import com.sam.model.Cart;
 import com.sam.model.CartItem;
@@ -48,10 +50,10 @@ public class OrderServiceImplementation implements OrderService {
 	}
 
 	@Override
-	public Order createOrder(User user, Address shippAddress) {
+	public Order createOrder(User user, Address shippingAddress) {
 		
-		shippAddress.setUser(user);
-		Address address= addressRepository.save(shippAddress);
+		shippingAddress.setUser(user);
+		Address address= addressRepository.save(shippingAddress);
 		user.getAddresses().add(address);
 		userRepository.save(user);
 		
@@ -101,7 +103,7 @@ public class OrderServiceImplementation implements OrderService {
 	}
 
 	@Override
-	public Order placedOrder(Long orderId) throws OrderException {
+	public Order placedOrder(Long orderId)  {
 		Order order=findOrderById(orderId);
 		order.setOrderStatus(OrderStatus.PLACED);
 		order.getPaymentDetails().setStatus(PaymentStatus.COMPLETED);
@@ -109,7 +111,7 @@ public class OrderServiceImplementation implements OrderService {
 	}
 
 	@Override
-	public Order confirmedOrder(Long orderId) throws OrderException {
+	public Order confirmedOrder(Long orderId) {
 		Order order=findOrderById(orderId);
 		order.setOrderStatus(OrderStatus.CONFIRMED);
 		
@@ -118,34 +120,39 @@ public class OrderServiceImplementation implements OrderService {
 	}
 
 	@Override
-	public Order shippedOrder(Long orderId) throws OrderException {
+	public Order shippedOrder(Long orderId) {
 		Order order=findOrderById(orderId);
 		order.setOrderStatus(OrderStatus.SHIPPED);
 		return orderRepository.save(order);
 	}
 
 	@Override
-	public Order deliveredOrder(Long orderId) throws OrderException {
+	public Order deliveredOrder(Long orderId) {
 		Order order=findOrderById(orderId);
 		order.setOrderStatus(OrderStatus.DELIVERED);
 		return orderRepository.save(order);
 	}
 
 	@Override
-	public Order cancledOrder(Long orderId) throws OrderException {
+	public Order cancledOrder(Long orderId) {
 		Order order=findOrderById(orderId);
 		order.setOrderStatus(OrderStatus.CANCELLED);
 		return orderRepository.save(order);
 	}
 
 	@Override
-	public Order findOrderById(Long orderId) throws OrderException {
+	public Order findOrderById(Long orderId){
 		Optional<Order> opt=orderRepository.findById(orderId);
 		
 		if(opt.isPresent()) {
 			return opt.get();
 		}
-		throw new OrderException("order not exist with id "+orderId);
+		ErrorModel errorModel = ErrorModel.builder()
+				.code(CommonConstant.ORDER_NOT_FOUND_CODE)
+				.message(CommonConstant.ORDER_NOT_FOUND)
+				.timestamp(LocalDateTime.now())
+				.build();
+		throw new BusinessException(errorModel);
 	}
 
 	@Override
@@ -161,7 +168,7 @@ public class OrderServiceImplementation implements OrderService {
 	}
 
 	@Override
-	public void deleteOrder(Long orderId) throws OrderException {
+	public void deleteOrder(Long orderId) {
 		Order order =findOrderById(orderId);
 		
 		orderRepository.deleteById(orderId);

@@ -6,7 +6,6 @@ import com.sam.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sam.exception.ProductException;
 import com.sam.model.Cart;
 import com.sam.model.CartItem;
 import com.sam.model.Product;
@@ -67,7 +66,7 @@ public class CartServiceImplementation implements CartService {
 	}
 
 	@Override
-	public CartItem addCartItem(Long userId, AddItemRequest req) throws ProductException {
+	public CartItem addCartItem(Long userId, AddItemRequest req) {
 		Cart cart=cartRepository.findByUserId(userId);
 		Product product=productService.findProductById(req.getProductId());
 		

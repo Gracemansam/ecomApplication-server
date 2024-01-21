@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.sam.exception.OrderException;
-import com.sam.exception.UserException;
 import com.sam.model.Order;
 import com.sam.repository.OrderRepository;
 import com.sam.response.ApiResponse;
@@ -51,7 +49,7 @@ public class PaymentController {
 	@PostMapping("/payments/{orderId}")
 	public ResponseEntity<PaymentLinkResponse>createPaymentLink(@PathVariable Long orderId,
 			@RequestHeader("Authorization")String jwt) 
-					throws RazorpayException, UserException, OrderException{
+					throws RazorpayException{
 		
 		Order order=orderService.findOrderById(orderId);
 		 try {
@@ -117,7 +115,7 @@ public class PaymentController {
 	}
 	
   @GetMapping("/payments")
-  public ResponseEntity<ApiResponse> redirect(@RequestParam(name="payment_id") String paymentId,@RequestParam("order_id")Long orderId) throws RazorpayException, OrderException {
+  public ResponseEntity<ApiResponse> redirect(@RequestParam(name="payment_id") String paymentId,@RequestParam("order_id")Long orderId) throws RazorpayException {
 	  RazorpayClient razorpay = new RazorpayClient(apiKey, apiSecret);
 	  Order order =orderService.findOrderById(orderId);
 	

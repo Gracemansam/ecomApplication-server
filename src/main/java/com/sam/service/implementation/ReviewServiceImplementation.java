@@ -3,11 +3,13 @@ package com.sam.service.implementation;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.sam.common_constant.CommonConstant;
+import com.sam.exception.BusinessException;
+import com.sam.exception.ErrorModel;
 import com.sam.service.ProductService;
 import com.sam.service.ReviewService;
 import org.springframework.stereotype.Service;
 
-import com.sam.exception.ProductException;
 import com.sam.model.Product;
 import com.sam.model.Review;
 import com.sam.model.User;
@@ -29,7 +31,7 @@ public class ReviewServiceImplementation implements ReviewService {
 	}
 
 	@Override
-	public Review createReview(ReviewRequest req,User user) throws ProductException {
+	public Review createReview(ReviewRequest req,User user)  {
 		// TODO Auto-generated method stub
 		Product product=productService.findProductById(req.getProductId());
 		Review review=new Review();

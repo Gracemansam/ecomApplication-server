@@ -5,6 +5,13 @@ import org.springframework.stereotype.Component;
 
 public class CommonConstant {
     public static final String USER_NOT_FOUND = "User not found";
+    public static final String USER_NOT_FOUND_CODE = "404";
+    public static final String PRODUCT_NOT_FOUND_CODE = "404";
+    public static final String PRODUCT_NOT_FOUND = "Product not found";
+    public static final String ORDER_NOT_FOUND_CODE = "404";
+    public static final String ORDER_NOT_FOUND = "Order not found";
+    public static final String CART_ITEM_NOT_FOUND = "Cart not found";
+    public static final String CART_ITEM_NOT_FOUND_CODE = "404";
 
     public static final String USER_REGISTRATION_FAILED = "Registration failed while sending verification email";
     public static final String USER_ALREADY_EXIST = "User already exist";

@@ -4,23 +4,22 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import com.sam.exception.ProductException;
 import com.sam.model.Product;
 import com.sam.request.CreateProductRequest;
 
 public interface ProductService {
 	
 	// only for admin
-	public Product createProduct(CreateProductRequest req) throws ProductException;
+	public Product createProduct(CreateProductRequest req);
 	
-	public String deleteProduct(Long productId) throws ProductException;
+	public String deleteProduct(Long productId);
 	
-	public Product updateProduct(Long productId,Product product)throws ProductException;
+	public Product updateProduct(Long productId,Product product);
 	
 	public List<Product> getAllProducts();
 	
 	// for user and admin both
-	public Product findProductById(Long id) throws ProductException;
+	public Product findProductById(Long id);
 	
 	public List<Product> findProductByCategory(String category);
 	

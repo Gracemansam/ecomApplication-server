@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.sam.exception.UserException;
 import com.sam.request.LoginRequest;
 import com.sam.response.AuthResponse;
 
@@ -30,14 +29,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody UserDto userDto, HttpServletRequest request){
-        try {
+
             // Call the createUserHandler method from the service layer
             ResponseEntity<AuthResponse> responseEntity = userServiceImplementation.createUserHandler(userDto,request);
             return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.OK);
-        } catch (UserException e) {
-            // Handle exceptions and return an error response
-            return new ResponseEntity<>(new AuthResponse(null, false), HttpStatus.BAD_REQUEST);
-        }
+
     }
 
 

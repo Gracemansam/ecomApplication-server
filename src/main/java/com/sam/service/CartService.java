@@ -1,6 +1,5 @@
 package com.sam.service;
 
-import com.sam.exception.ProductException;
 import com.sam.model.Cart;
 import com.sam.model.CartItem;
 import com.sam.model.User;
@@ -10,7 +9,7 @@ public interface CartService {
 	
 	public Cart createCart(User user);
 	
-	public CartItem addCartItem(Long userId,AddItemRequest req) throws ProductException;
+	public CartItem addCartItem(Long userId,AddItemRequest req);
 	
 	public Cart findUserCart(Long userId);
 

@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sam.exception.CartItemException;
-import com.sam.exception.UserException;
 import com.sam.model.CartItem;
 import com.sam.model.User;
 import com.sam.response.ApiResponse;
@@ -34,7 +32,7 @@ public class CartItemController {
 	}
 	
 	@DeleteMapping("/{cartItemId}")
-	public ResponseEntity<ApiResponse>deleteCartItemHandler(@PathVariable Long cartItemId, @RequestHeader("Authorization")String jwt) throws CartItemException, UserException{
+	public ResponseEntity<ApiResponse>deleteCartItemHandler(@PathVariable Long cartItemId, @RequestHeader("Authorization")String jwt){
 		
 		User user=userService.findUserProfileByJwt(jwt);
 		cartItemService.removeCartItem(user.getId(), cartItemId);
@@ -45,7 +43,7 @@ public class CartItemController {
 	}
 	
 	@PutMapping("/{cartItemId}")
-	public ResponseEntity<CartItem>updateCartItemHandler(@PathVariable Long cartItemId, @RequestBody CartItem cartItem, @RequestHeader("Authorization")String jwt) throws CartItemException, UserException{
+	public ResponseEntity<CartItem>updateCartItemHandler(@PathVariable Long cartItemId, @RequestBody CartItem cartItem, @RequestHeader("Authorization")String jwt) {
 		
 		User user=userService.findUserProfileByJwt(jwt);
 		

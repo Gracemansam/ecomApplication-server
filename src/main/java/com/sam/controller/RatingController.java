@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sam.exception.ProductException;
-import com.sam.exception.UserException;
 import com.sam.model.Rating;
 import com.sam.model.User;
 import com.sam.request.RatingRequest;
@@ -34,7 +32,7 @@ public class RatingController {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<Rating> createRatingHandler(@RequestBody RatingRequest req,@RequestHeader("Authorization") String jwt) throws UserException, ProductException{
+	public ResponseEntity<Rating> createRatingHandler(@RequestBody RatingRequest req,@RequestHeader("Authorization") String jwt){
 		User user=userService.findUserProfileByJwt(jwt);
 		Rating rating=ratingServices.createRating(req, user);
 		return new ResponseEntity<>(rating,HttpStatus.ACCEPTED);

@@ -30,8 +30,5 @@ public class UserDto {
     @NotEmpty
     private String email;
 
-    //    @Enumerated(EnumType.STRING)
-    private String role;
-
     private String mobile;
 }

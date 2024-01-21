@@ -3,12 +3,14 @@ package com.sam.service.implementation;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.sam.common_constant.CommonConstant;
+import com.sam.exception.BusinessException;
+import com.sam.exception.ErrorModel;
 import com.sam.service.ProductService;
 import com.sam.service.RatingServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.sam.exception.ProductException;
 import com.sam.model.Product;
 import com.sam.model.Rating;
 import com.sam.model.User;
@@ -28,10 +30,9 @@ public class RatingServiceImplementation implements RatingServices {
 //	}
 
 	@Override
-	public Rating createRating(RatingRequest req,User user) throws ProductException {
+	public Rating createRating(RatingRequest req,User user) {
 		
 		Product product=productService.findProductById(req.getProductId());
-		
 		Rating rating=new Rating();
 		rating.setProduct(product);
 		rating.setUser(user);

@@ -2,6 +2,7 @@ package com.sam.service.implementation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,11 +26,11 @@ public class CustomUserDetails implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		User user = userRepository.findByEmail(username);
-		
-		if(user == null) {
+		Optional<User> findUser = userRepository.findByEmail(username);
+		if(findUser.isEmpty()) {
 			throw new UsernameNotFoundException("user not found with email "+username);
 		}
+		User user = findUser.get();
 		
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		

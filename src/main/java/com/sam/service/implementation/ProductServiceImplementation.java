@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.sam.common_constant.CommonConstant;
+import com.sam.exception.BusinessException;
+import com.sam.exception.ErrorModel;
 import com.sam.service.ProductService;
 import com.sam.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.sam.exception.ProductException;
 import com.sam.model.Category;
 import com.sam.model.Product;
 import com.sam.repository.CategoryRepository;
@@ -99,10 +101,9 @@ public class ProductServiceImplementation implements ProductService {
 	}
 
 	@Override
-	public String deleteProduct(Long productId) throws ProductException {
+	public String deleteProduct(Long productId){
 		
 		Product product=findProductById(productId);
-		
 		System.out.println("delete product "+product.getId()+" - "+productId);
 		product.getSizes().clear();
 //		productRepository.save(product);
@@ -113,9 +114,8 @@ public class ProductServiceImplementation implements ProductService {
 	}
 
 	@Override
-	public Product updateProduct(Long productId,Product req) throws ProductException {
+	public Product updateProduct(Long productId,Product req) {
 		Product product=findProductById(productId);
-		
 		if(req.getQuantity()!=0) {
 			product.setQuantity(req.getQuantity());
 		}
@@ -135,13 +135,18 @@ public class ProductServiceImplementation implements ProductService {
 	}
 
 	@Override
-	public Product findProductById(Long id) throws ProductException {
+	public Product findProductById(Long id) {
 		Optional<Product> opt=productRepository.findById(id);
 		
 		if(opt.isPresent()) {
 			return opt.get();
 		}
-		throw new ProductException("product not found with id "+id);
+		ErrorModel errorModel = ErrorModel.builder()
+				.code(CommonConstant.PRODUCT_NOT_FOUND_CODE)
+				.message(CommonConstant.PRODUCT_NOT_FOUND)
+				.timestamp(LocalDateTime.now())
+				.build();
+		throw new BusinessException(errorModel);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.sam.service.implementation;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
@@ -8,14 +9,14 @@ import com.sam.common_constant.CommonConstant;
 import com.sam.dto.UserDto;
 import com.sam.converter.UserConverter;
 
-import com.sam.event.RegistrationCompleteEvent;
+import com.sam.exception.BusinessException;
+import com.sam.exception.ErrorModel;
 import com.sam.model.VerificationToken;
 import com.sam.repository.VerificationTokenRepository;
 import com.sam.request.LoginRequest;
 import com.sam.response.AuthResponse;
 import com.sam.service.CartService;
 import com.sam.service.UserService;
-import com.sam.service.implementation.CustomUserDetails;
 import com.sam.utils.ApplicationUrl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,6 @@ import org.springframework.stereotype.Service;
 
 
 import com.sam.config.JwtTokenProvider;
-import com.sam.exception.UserException;
 import com.sam.model.User;
 import com.sam.repository.UserRepository;
 
@@ -71,14 +71,20 @@ public class UserServiceImplementation implements UserService {
 
 
 	@Override
-	public ResponseEntity<AuthResponse> createUserHandler(UserDto userDto, HttpServletRequest request) throws UserException{
+	public ResponseEntity<AuthResponse> createUserHandler(UserDto userDto, HttpServletRequest request){
 
-		User isEmailExist = userRepository.findByEmail(userDto.getEmail());
+		Optional<User> isEmailExist = userRepository.findByEmail(userDto.getEmail());
 
 		// Check if user with the given email already exists
-		if (isEmailExist!=null) {
+		if (isEmailExist.isPresent()) {
+			ErrorModel errorModel = ErrorModel.builder()
+					.code(CommonConstant.USER_ALREADY_EXIST_CODE)
+					.message(CommonConstant.USER_ALREADY_EXIST)
+					.timestamp(LocalDateTime.now())
+							.build();
+			throw new BusinessException(errorModel);
 
-			throw new UserException(CommonConstant.USER_ALREADY_EXIST + userDto.getEmail());
+
 		}
 
 		// Create new user
@@ -90,13 +96,13 @@ public class UserServiceImplementation implements UserService {
 		User savedUser= userRepository.save(newUser);
 
 		cartService.createCart(savedUser);
-	try {
-
-		publisher.publishEvent(new RegistrationCompleteEvent(newUser, applicationUrl.applicationUrl(request)));
-	} catch (Exception e) {
-		e.printStackTrace();
-		throw new UserException(CommonConstant.USER_REGISTRATION_FAILED);
-	}
+//	try {
+//
+//		publisher.publishEvent(new RegistrationCompleteEvent(newUser, applicationUrl.applicationUrl(request)));
+//	} catch (Exception e) {
+//		e.printStackTrace();
+//		throw new UserException(CommonConstant.USER_REGISTRATION_FAILED);
+//	}
 
 	Authentication authentication = new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -104,8 +110,9 @@ public class UserServiceImplementation implements UserService {
 		String token = jwtTokenProvider.generateToken(authentication);
 
 		AuthResponse authResponse= new AuthResponse(token,true);
+//		UserDto savedUserResponse = userConverter.convertEntityToDTO(savedUser);
 
-		return new ResponseEntity<>(authResponse, HttpStatus.OK);
+		return new ResponseEntity<>(authResponse,HttpStatus.CREATED);
 
 	}
 
@@ -148,29 +155,39 @@ public Authentication authenticate(String username, String password) {
 
 
 	@Override
-	public User findUserById(Long userId) throws UserException {
+	public User findUserById(Long userId) {
 		Optional<User> user=userRepository.findById(userId);
 		
 		if(user.isPresent()){
 			return user.get();
 		}
-		throw new UserException("user not found with id "+userId);
+		ErrorModel errorModel = ErrorModel.builder()
+				.code(CommonConstant.USER_NOT_FOUND_CODE)
+				.message(CommonConstant.USER_NOT_FOUND)
+				.timestamp(LocalDateTime.now())
+				.build();
+		throw new BusinessException(errorModel);
 	}
 
 	@Override
-	public User findUserProfileByJwt(String jwt) throws UserException {
+	public User findUserProfileByJwt(String jwt) {
 		System.out.println("user service");
 		String email=jwtTokenProvider.getEmailFromJwtToken(jwt);
 		
 		System.out.println("email"+email);
 		
-		User user=userRepository.findByEmail(email);
+		Optional<User> user=userRepository.findByEmail(email);
 		
-		if(user==null) {
-			throw new UserException(CommonConstant.USER_NOT_FOUND +email);
+		if(user.isEmpty()) {
+			ErrorModel errorModel = ErrorModel.builder()
+					.code(CommonConstant.USER_NOT_FOUND_CODE)
+					.message(CommonConstant.USER_NOT_FOUND)
+					.timestamp(LocalDateTime.now())
+					.build();
+			throw new BusinessException(errorModel);
 		}
-		System.out.println("email user"+user.getEmail());
-		return user;
+//		System.out.println("email user"+user.getEmail());
+		return user.get();
 	}
 
 	@Override

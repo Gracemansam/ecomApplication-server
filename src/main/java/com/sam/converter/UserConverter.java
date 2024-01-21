@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
                     .id(userEntity.getId())
                     .firstName(userEntity.getFirstName())
                     .lastName(userEntity.getLastName())
-                    .role(userEntity.getRole())
                     .email(userEntity.getEmail())
                     .mobile(userEntity.getMobile())
                     .build();

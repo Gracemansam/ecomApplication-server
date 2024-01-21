@@ -1,15 +1,17 @@
 package com.sam.service.implementation;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+import com.sam.common_constant.CommonConstant;
+import com.sam.exception.BusinessException;
+import com.sam.exception.ErrorModel;
 import com.sam.service.CartItemService;
 import com.sam.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import com.sam.exception.CartItemException;
-import com.sam.exception.UserException;
 import com.sam.model.Cart;
 import com.sam.model.CartItem;
 import com.sam.model.Product;
@@ -48,7 +50,7 @@ public class CartItemServiceImplementation implements CartItemService {
 	}
 
 	@Override
-	public CartItem updateCartItem(Long userId, Long id, CartItem cartItem) throws CartItemException, UserException {
+	public CartItem updateCartItem(Long userId, Long id, CartItem cartItem) {
 		
 		CartItem item=findCartItemById(id);
 		User user=userService.findUserById(item.getUserId());
@@ -65,7 +67,12 @@ public class CartItemServiceImplementation implements CartItemService {
 			
 		}
 		else {
-			throw new CartItemException("You can't update  another users cart_item");
+			ErrorModel errorModel = ErrorModel.builder()
+					.code("400")
+					.message("You can't update  another users cart_item")
+					.timestamp(LocalDateTime.now())
+					.build();
+			throw new BusinessException(errorModel);
 		}
 		
 	}
@@ -81,7 +88,7 @@ public class CartItemServiceImplementation implements CartItemService {
 	
 
 	@Override
-	public void removeCartItem(Long userId,Long cartItemId) throws CartItemException, UserException {
+	public void removeCartItem(Long userId,Long cartItemId) {
 		
 		System.out.println("userId- "+userId+" cartItemId "+cartItemId);
 		
@@ -94,19 +101,29 @@ public class CartItemServiceImplementation implements CartItemService {
 			cartItemRepository.deleteById(cartItem.getId());
 		}
 		else {
-			throw new UserException("you can't remove anothor users item");
+			ErrorModel errorModel = ErrorModel.builder()
+					.code("400")
+					.message("You can't remove another users cart_item")
+					.timestamp(LocalDateTime.now())
+					.build();
+			throw new BusinessException(errorModel);
 		}
 		
 	}
 
 	@Override
-	public CartItem findCartItemById(Long cartItemId) throws CartItemException {
+	public CartItem findCartItemById(Long cartItemId){
 		Optional<CartItem> opt=cartItemRepository.findById(cartItemId);
 		
 		if(opt.isPresent()) {
 			return opt.get();
 		}
-		throw new CartItemException("cartItem not found with id : "+cartItemId);
+		ErrorModel errorModel = ErrorModel.builder()
+				.code(CommonConstant.CART_ITEM_NOT_FOUND_CODE)
+				.message(CommonConstant.CART_ITEM_NOT_FOUND)
+				.timestamp(LocalDateTime.now())
+				.build();
+		throw new BusinessException(errorModel);
 	}
 
 }

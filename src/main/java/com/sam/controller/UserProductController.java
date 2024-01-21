@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sam.exception.ProductException;
 import com.sam.model.Product;
 import com.sam.service.ProductService;
 
@@ -43,7 +42,7 @@ public class UserProductController {
 
 	
 	@GetMapping("/products/id/{productId}")
-	public ResponseEntity<Product> findProductByIdHandler(@PathVariable Long productId) throws ProductException{
+	public ResponseEntity<Product> findProductByIdHandler(@PathVariable Long productId){
 		
 		Product product=productService.findProductById(productId);
 		
