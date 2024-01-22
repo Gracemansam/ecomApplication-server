@@ -60,7 +60,12 @@ public class AppConfig {
 		.and()
 		.httpBasic()
 		.and()
-		.formLogin();
+		.formLogin()
+				.and().logout().logoutUrl("/logout").logoutSuccessUrl("/auth/signin")
+				.and().rememberMe()
+				.key("+_)(*&/'6+5+4+3+2+1+0-)(*&^%$#@!~`")
+				.tokenValiditySeconds(86400);
+		;
 		
 		return http.build();
 		
