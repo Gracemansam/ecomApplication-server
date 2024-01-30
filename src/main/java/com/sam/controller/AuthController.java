@@ -45,7 +45,7 @@ public class AuthController {
             return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.OK);
         } catch (Exception e) {
             // Handle exceptions and return an error response
-            return new ResponseEntity<>(new AuthResponse(null, false), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new AuthResponse(e.getMessage() , false), HttpStatus.UNAUTHORIZED);
         }
     }
 

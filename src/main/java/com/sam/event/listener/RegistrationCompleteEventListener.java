@@ -2,6 +2,7 @@ package com.sam.event.listener;
 
 import com.sam.event.RegistrationCompleteEvent;
 import com.sam.model.User;
+import com.sam.service.implementation.EmailService;
 import com.sam.service.implementation.UserServiceImplementation;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -22,7 +23,8 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
     private final UserServiceImplementation authServiceImplementation ;
 
 
-    private  final JavaMailSender mailSender;
+
+    private final EmailService emailService;
     private User theUser;
     @Override
     public void onApplicationEvent(RegistrationCompleteEvent event) {
@@ -33,27 +35,21 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
         String url = event.getApplicationUrl()+"/auth/verifyEmail?token="+verificationToken;
 
         try {
-            sendVerificationEmail(url);
+            sendVerificationEmail(url, theUser.getEmail(), theUser.getFirstName());
         } catch (MessagingException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
         //log.info("Click the link to verify your registration :  {}", url);
     }
-    public void sendVerificationEmail(String url) throws MessagingException, UnsupportedEncodingException, MessagingException {
+
+    public void sendVerificationEmail(String url, String email, String firstName) throws MessagingException, UnsupportedEncodingException {
         String subject = "Email Verification";
-        String senderName = "User Registration Portal Service";
-        String mailContent = "<p> Hi, "+ theUser.getFirstName()+ ", </p>"+
-                "<p>Thank you for registering with us,"+"" +
-                "Please, follow the link below to complete your registration.</p>"+
-                "<a href=\"" +url+ "\">Verify your email to activate your account</a>"+
+        String mailContent = "<p> Hi, " + theUser.getFirstName() + ", </p>" +
+                "<p>Thank you for registering with us," + "" +
+                "Please, follow the link below to complete your registration.</p>" +
+                "<a href=\"" + url + "\">Verify your email to activate your account</a>" +
                 "<p> Thank you <br> Users Registration Portal Service";
-        MimeMessage message = mailSender.createMimeMessage();
-        var messageHelper = new MimeMessageHelper(message);
-        messageHelper.setFrom("adetoyesamuel63@gmail.com", senderName);
-        messageHelper.setTo(theUser.getEmail());
-        messageHelper.setSubject(subject);
-        messageHelper.setText(mailContent, true);
-        mailSender.send(message);
+        emailService.sendEmail(url, email, subject, mailContent);
     }
 }
 
